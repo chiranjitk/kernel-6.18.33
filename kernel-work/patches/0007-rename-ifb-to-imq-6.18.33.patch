@@ -1,0 +1,22 @@
+From: Julian Anastasov <ja@ssi.bg>
+Subject: [PATCH] Rename IFB interface to IMQ
+
+Rename the IFB (Intermediate Functional Block) network interface
+names from ifb%d to imq%d for compatibility with IMQ-based
+traffic shaping setups.
+
+This is a port of the original 5.4 patch to kernel 6.18.33.
+
+Signed-off-by: Ported to 6.18.33
+
+--- a/drivers/net/ifb.c
++++ b/drivers/net/ifb.c
+@@ -405,7 +405,7 @@ static int __init ifb_init_one(int index)
+ 	struct net_device *dev_ifb;
+ 	int err;
+ 
+-	dev_ifb = alloc_netdev(sizeof(struct ifb_dev_private), "ifb%d",
++	dev_ifb = alloc_netdev(sizeof(struct ifb_dev_private), "imq%d",
+ 			       NET_NAME_UNKNOWN, ifb_setup);
+ 
+ 	if (!dev_ifb)
