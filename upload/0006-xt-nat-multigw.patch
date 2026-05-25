@@ -1,0 +1,77 @@
+--- a/net/netfilter/xt_nat.c	2020-10-09 17:43:43.113902810 +0530
++++ b/net/netfilter/xt_nat.c	2020-10-09 17:52:06.664699226 +0530
+@@ -12,6 +12,8 @@
+ #include <linux/netfilter.h>
+ #include <linux/netfilter/x_tables.h>
+ #include <net/netfilter/nf_nat.h>
++#include <net/route.h>
++#include <net/ip.h>
+ 
+ static int xt_nat_checkentry_v0(const struct xt_tgchk_param *par)
+ {
+@@ -55,12 +57,32 @@ xt_snat_target_v0(struct sk_buff *skb, c
+ 	struct nf_nat_range2 range;
+ 	enum ip_conntrack_info ctinfo;
+ 	struct nf_conn *ct;
++	struct rtable *rt;
+ 
+ 	ct = nf_ct_get(skb, &ctinfo);
+ 	WARN_ON(!(ct != NULL &&
+ 		 (ctinfo == IP_CT_NEW || ctinfo == IP_CT_RELATED ||
+ 		  ctinfo == IP_CT_RELATED_REPLY)));
+ 
++	{
++		ct->multi_gw_ifindex= skb->dev->ifindex;
++
++		struct flowi4 fl4 = { .flowi4_tos = RT_TOS(ip_hdr(skb)->tos),
++		                      .flowi4_mark = skb->mark,
++	    	                  .flowi4_oif =  ct->multi_gw_ifindex,
++	        	              .daddr = ip_hdr(skb)->daddr,
++	            	          .fl4_gw = skb_rtable(skb)->rt_gw4 };
++
++		rt = ip_route_output_key(dev_net(skb->dev), &fl4);
++		if (IS_ERR(rt)) {
++			/* Funky routing can do this. */
++			if (net_ratelimit())
++				pr_info("%s: No route:\n", skb->dev->name);
++			 return NF_DROP;
++		}
++		ip_rt_put(rt);
++	}
++
+ 	xt_nat_convert_range(&range, &mr->range[0]);
+ 	return nf_nat_setup_info(ct, &range, NF_NAT_MANIP_SRC);
+ }
+@@ -88,12 +110,32 @@ xt_snat_target_v1(struct sk_buff *skb, c
+ 	struct nf_nat_range2 range;
+ 	enum ip_conntrack_info ctinfo;
+ 	struct nf_conn *ct;
++	struct rtable *rt;
+ 
+ 	ct = nf_ct_get(skb, &ctinfo);
+ 	WARN_ON(!(ct != NULL &&
+ 		 (ctinfo == IP_CT_NEW || ctinfo == IP_CT_RELATED ||
+ 		  ctinfo == IP_CT_RELATED_REPLY)));
+ 
++	{
++		ct->multi_gw_ifindex= skb->dev->ifindex;
++
++		struct flowi4 fl4 = { .flowi4_tos = RT_TOS(ip_hdr(skb)->tos),
++		                      .flowi4_mark = skb->mark,
++                              .flowi4_oif =  ct->multi_gw_ifindex,
++                              .daddr = ip_hdr(skb)->daddr,
++                              .fl4_gw = skb_rtable(skb)->rt_gw4 };
++
++		rt = ip_route_output_key(dev_net(skb->dev), &fl4);
++		if (IS_ERR(rt)) {
++			/* Funky routing can do this. */
++			if (net_ratelimit())
++				pr_info("%s: No route:\n", skb->dev->name);
++			return NF_DROP;
++		}
++		ip_rt_put(rt);
++	}
++
+ 	memcpy(&range, range_v1, sizeof(*range_v1));
+ 	memset(&range.base_proto, 0, sizeof(range.base_proto));
+ 
