@@ -1,0 +1,11 @@
+--- a/drivers/net/ifb.c	2020-10-14 04:33:07.000000000 -0400
++++ b/drivers/net/ifb.c	2020-12-06 03:38:59.027441866 -0500
+@@ -305,7 +305,7 @@ static int __init ifb_init_one(int index
+ 	struct net_device *dev_ifb;
+ 	int err;
+ 
+-	dev_ifb = alloc_netdev(sizeof(struct ifb_dev_private), "ifb%d",
++	dev_ifb = alloc_netdev(sizeof(struct ifb_dev_private), "imq%d",
+ 			       NET_NAME_UNKNOWN, ifb_setup);
+ 
+ 	if (!dev_ifb)
