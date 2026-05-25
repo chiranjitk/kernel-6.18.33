@@ -1,0 +1,49 @@
+--- linux-5.4.71/fs/ext2/super.c	2020-10-14 04:33:07.000000000 -0400
++++ linux-5.4.71-patched/fs/ext2/super.c	2020-11-08 06:16:43.848330405 -0500
+@@ -39,6 +39,8 @@
+ #include "xattr.h"
+ #include "acl.h"
+ 
++MODULE_ALIAS("newfs_old");
++
+ static void ext2_write_super(struct super_block *sb);
+ static int ext2_remount (struct super_block * sb, int * flags, char * data);
+ static int ext2_statfs (struct dentry * dentry, struct kstatfs * buf);
+@@ -1635,7 +1637,7 @@ out:
+ 
+ static struct file_system_type ext2_fs_type = {
+ 	.owner		= THIS_MODULE,
+-	.name		= "ext2",
++	.name		= "newfs_old",
+ 	.mount		= ext2_mount,
+ 	.kill_sb	= kill_block_super,
+ 	.fs_flags	= FS_REQUIRES_DEV,
+--- linux-5.4.71/fs/ext4/super.c	2020-10-14 04:33:07.000000000 -0400
++++ linux-5.4.71-patched/fs/ext4/super.c	2020-11-08 06:15:44.390649222 -0500
+@@ -117,7 +117,7 @@ static struct inode *ext4_get_journal_in
+ #if !defined(CONFIG_EXT2_FS) && !defined(CONFIG_EXT2_FS_MODULE) && defined(CONFIG_EXT4_USE_FOR_EXT2)
+ static struct file_system_type ext2_fs_type = {
+ 	.owner		= THIS_MODULE,
+-	.name		= "ext2",
++	.name		= "newfs_old",
+ 	.mount		= ext4_mount,
+ 	.kill_sb	= kill_block_super,
+ 	.fs_flags	= FS_REQUIRES_DEV,
+@@ -132,7 +132,7 @@ MODULE_ALIAS("ext2");
+ 
+ static struct file_system_type ext3_fs_type = {
+ 	.owner		= THIS_MODULE,
+-	.name		= "ext3",
++	.name		= "newfs_old",
+ 	.mount		= ext4_mount,
+ 	.kill_sb	= kill_block_super,
+ 	.fs_flags	= FS_REQUIRES_DEV,
+@@ -6205,7 +6205,7 @@ static inline int ext3_feature_set_ok(st
+ 
+ static struct file_system_type ext4_fs_type = {
+ 	.owner		= THIS_MODULE,
+-	.name		= "ext4",
++	.name		= "newfs",
+ 	.mount		= ext4_mount,
+ 	.kill_sb	= kill_block_super,
+ 	.fs_flags	= FS_REQUIRES_DEV,
