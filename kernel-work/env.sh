@@ -8,3 +8,4 @@ export PKG_CONFIG_PATH="$PREFIX/lib/pkgconfig:$PREFIX/lib64/pkgconfig:${PKG_CONF
 echo "Kernel build environment loaded."
 echo "  Kernel source: $KERNEL_SRC"
 echo "  Tools prefix:  $PREFIX"
+# Refresh Mon May 25 08:20:03 UTC 2026
