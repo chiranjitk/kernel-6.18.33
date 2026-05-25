@@ -112,6 +112,7 @@ struct nf_conn {
         u_int32_t mark;
         u_int32_t ipset_mark;
 #endif
+        int multi_gw_ifindex;
 
 #ifdef CONFIG_NF_CONNTRACK_SECMARK
         u_int32_t secmark;
