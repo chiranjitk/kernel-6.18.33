@@ -132,7 +132,7 @@ static const struct fs_context_operations ext4_context_ops = {
 #if !defined(CONFIG_EXT2_FS) && !defined(CONFIG_EXT2_FS_MODULE) && defined(CONFIG_EXT4_USE_FOR_EXT2)
 static struct file_system_type ext2_fs_type = {
         .owner                  = THIS_MODULE,
-        .name                   = "newfs_old",
+        .name                   = "ext2",
         .init_fs_context        = ext4_init_fs_context,
         .parameters             = ext4_param_specs,
         .kill_sb                = ext4_kill_sb,
@@ -148,7 +148,7 @@ MODULE_ALIAS("ext2");
 
 static struct file_system_type ext3_fs_type = {
         .owner                  = THIS_MODULE,
-        .name                   = "newfs_old",
+        .name                   = "ext3",
         .init_fs_context        = ext4_init_fs_context,
         .parameters             = ext4_param_specs,
         .kill_sb                = ext4_kill_sb,
@@ -7414,7 +7414,7 @@ static void ext4_kill_sb(struct super_block *sb)
 
 static struct file_system_type ext4_fs_type = {
         .owner                  = THIS_MODULE,
-        .name                   = "newfs",
+        .name                   = "ext4",
         .init_fs_context        = ext4_init_fs_context,
         .parameters             = ext4_param_specs,
         .kill_sb                = ext4_kill_sb,

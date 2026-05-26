@@ -40,7 +40,7 @@
 #include "xattr.h"
 #include "acl.h"
 
-MODULE_ALIAS("newfs_old");
+MODULE_ALIAS("ext2");
 
 static void ext2_write_super(struct super_block *sb);
 static int ext2_statfs (struct dentry * dentry, struct kstatfs * buf);
@@ -1699,7 +1699,7 @@ static int ext2_init_fs_context(struct fs_context *fc)
 
 static struct file_system_type ext2_fs_type = {
         .owner          = THIS_MODULE,
-        .name           = "newfs_old",
+        .name           = "ext2",
         .kill_sb        = kill_block_super,
         .fs_flags       = FS_REQUIRES_DEV,
         .init_fs_context = ext2_init_fs_context,
